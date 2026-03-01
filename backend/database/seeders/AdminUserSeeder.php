@@ -18,6 +18,7 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'QuickHire Admin',
                 'password' => Hash::make('admin12345'),
+                'is_admin' => true,
             ],
         );
     }

@@ -1,15 +1,44 @@
 "use client";
 
-import { loginAdmin } from "@/lib/api";
-import { setAuthToken } from "@/lib/auth";
+import { ApiError, getCurrentAdmin, loginAdmin } from "@/lib/api";
+import { clearAuthToken, getAuthToken, setAuthToken } from "@/lib/auth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const nextPath = searchParams.get("next") || "/admin";
+
+  useEffect(() => {
+    const token = getAuthToken();
+
+    if (!token) {
+      setCheckingSession(false);
+      return;
+    }
+
+    getCurrentAdmin(token)
+      .then((admin) => {
+        if (!admin.is_admin) {
+          clearAuthToken();
+          return;
+        }
+
+        router.replace("/admin");
+      })
+      .catch(() => {
+        clearAuthToken();
+      })
+      .finally(() => {
+        setCheckingSession(false);
+      });
+  }, [router]);
 
   async function onSubmit(formData: FormData) {
     setLoading(true);
@@ -20,14 +49,31 @@ export default function AdminLoginPage() {
 
     try {
       const data = await loginAdmin({ email, password });
+
+      if (!data.user.is_admin) {
+        throw new ApiError("Admin access is required.", 403);
+      }
+
       setAuthToken(data.token);
-      router.push("/admin");
+      router.push(nextPath);
       router.refresh();
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "Login failed.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen bg-[#f5f6fb]">
+        <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-4 py-10 sm:px-6">
+          <section className="w-full rounded-2xl border border-[#e5e8f6] bg-white p-6 text-sm text-slate-500 shadow-[0_8px_20px_rgba(79,70,229,0.06)]">
+            Checking your admin session...
+          </section>
+        </main>
+      </div>
+    );
   }
 
   return (

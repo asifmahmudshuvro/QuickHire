@@ -13,7 +13,10 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function (): void {
 	Route::get('/auth/me', [AuthController::class, 'me']);
 	Route::post('/auth/logout', [AuthController::class, 'logout']);
+});
 
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function (): void {
 	Route::post('/jobs', [JobController::class, 'store']);
 	Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
 });

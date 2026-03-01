@@ -14,6 +14,23 @@ type ApiResponse<T> = {
   message?: string;
 };
 
+type ApiErrorResponse = {
+  message?: string;
+  errors?: Record<string, string[]>;
+};
+
+export class ApiError extends Error {
+  status: number;
+  errors?: Record<string, string[]>;
+
+  constructor(message: string, status: number, errors?: Record<string, string[]>) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.errors = errors;
+  }
+}
+
 function getAuthHeaders(token?: string): HeadersInit {
   if (!token) {
     return {};
@@ -35,8 +52,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    throw new Error(body?.message ?? "Request failed");
+    const body = await response.json().catch(() => ({} as ApiErrorResponse));
+    throw new ApiError(body?.message ?? "Request failed", response.status, body?.errors);
   }
 
   return response.json() as Promise<T>;

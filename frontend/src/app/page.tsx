@@ -21,22 +21,22 @@ export default async function Home({ searchParams }: HomeProps) {
   const locations = [...new Set(allJobs.map((job) => job.location))].sort();
 
   const categoryCards = [
-    { title: "Design", icon: "✎" },
-    { title: "Sales", icon: "◔" },
-    { title: "Marketing", icon: "📣" },
-    { title: "Finance", icon: "▣" },
-    { title: "Technology", icon: "⌘" },
-    { title: "Engineering", icon: "</>" },
-    { title: "Business", icon: "⌂" },
-    { title: "Human Resource", icon: "◉" },
+    { title: "Design", icon: "design" },
+    { title: "Sales", icon: "sales" },
+    { title: "Marketing", icon: "marketing" },
+    { title: "Finance", icon: "finance" },
+    { title: "Technology", icon: "technology" },
+    { title: "Engineering", icon: "engineering" },
+    { title: "Business", icon: "business" },
+    { title: "Human Resource", icon: "hr" },
   ];
 
   const companyLogos = [
-    { name: "Vodafone", src: "https://logo.clearbit.com/vodafone.com" },
-    { name: "Intel", src: "https://logo.clearbit.com/intel.com" },
-    { name: "Tesla", src: "https://logo.clearbit.com/tesla.com" },
-    { name: "AMD", src: "https://logo.clearbit.com/amd.com" },
-    { name: "Talkit", src: "https://logo.clearbit.com/talkit.com" },
+    { name: "Vodafone", src: "/vodafone-2017-logo.png" },
+    { name: "Intel", src: "/intel-3.png" },
+    { name: "Tesla", src: "/tesla-9%201.png" },
+    { name: "AMD", src: "/amd-logo-1.png" },
+    { name: "Talkit", src: "/talkit%201.png" },
   ];
 
   const categoryCountMap = allJobs.reduce<Record<string, number>>((accumulator, job) => {
@@ -53,17 +53,28 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <div className="min-h-screen bg-[#f5f6fb] text-slate-800 max-[390px]:overflow-x-hidden">
       <section className="relative overflow-hidden bg-[#f3f4fb]">
+        <div
+          className="pointer-events-none absolute inset-y-0 right-[-90px] w-[86%] opacity-20 lg:hidden"
+          aria-hidden
+          style={{
+            backgroundImage: "url('/Pattern.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "right center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+
         <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 max-[390px]:px-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
-            <Link href="/" className="inline-flex items-center gap-2 text-xl font-extrabold leading-none text-[#4f46e5]">
-              <span className="relative inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#4f46e5]">
-                <span className="h-4 w-4 rounded-full border-2 border-white" />
-                <span className="absolute right-[3px] top-[3px] h-1.5 w-1.5 rounded-full bg-white" />
+            <Link href="/" className="inline-flex items-center gap-2 text-lg font-extrabold leading-none text-[#4f46e5]">
+              <span className="relative inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#4f46e5] sm:h-6 sm:w-6">
+                <span className="h-3 w-3 rounded-full border-2 border-white sm:h-3.5 sm:w-3.5" />
+                <span className="absolute right-[3px] top-[3px] h-1 w-1 rounded-full bg-white sm:h-1.5 sm:w-1.5" />
               </span>
-              <span className="text-[30px] font-extrabold tracking-tight text-[#1f2a44]">QuickHire</span>
+              <span className="text-base font-extrabold tracking-tight text-[#1f2a44] sm:text-[24px]">QuickHire</span>
             </Link>
 
-            <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-500 lg:flex">
+            <nav className="hidden items-center gap-7 text-[13px] font-semibold text-slate-500 lg:flex">
               <Link href="/jobs" className="hover:text-[#1f2a44]">
                 Find Jobs
               </Link>
@@ -74,15 +85,15 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
 
           <div className="hidden items-center gap-4 lg:flex">
-            <Link href="/admin" className="text-sm font-semibold text-[#4f46e5]">
+            <Link href="/admin" className="text-[13px] font-semibold text-[#4f46e5]">
               Login
             </Link>
-            <Link href="/admin" className="rounded-sm bg-[#4f46e5] px-6 py-2.5 text-sm font-semibold text-white">
+            <Link href="/admin" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
               Sign Up
             </Link>
           </div>
 
-          <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-500 lg:hidden" aria-label="Open menu">
+          <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 lg:hidden" aria-label="Open menu">
             ☰
           </button>
         </header>
@@ -104,8 +115,8 @@ export default async function Home({ searchParams }: HomeProps) {
               Great platform for the job seeker that searching for new career heights and passionate about startups.
             </p>
 
-            <form action="/jobs" method="GET" className="mt-6 grid gap-2 rounded-sm border border-[#e6e8f4] bg-white p-2.5 max-[390px]:p-[7px] sm:mt-7 sm:grid-cols-[1fr_220px_240px]">
-              <div className="relative">
+            <form action="/jobs" method="GET" className="relative z-30 mt-6 grid max-w-[860px] overflow-hidden rounded-sm border border-[#e6e8f4] bg-white max-[390px]:mt-5 sm:mt-7 lg:w-[860px] lg:max-w-none lg:grid-cols-[1fr_220px_232px] lg:p-2">
+              <div className="relative px-2 max-[390px]:px-[7px] lg:border-r lg:border-[#e8ebf6] lg:px-4">
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
                     <circle cx="11" cy="11" r="7" />
@@ -116,11 +127,11 @@ export default async function Home({ searchParams }: HomeProps) {
                   name="search"
                   defaultValue={search}
                   placeholder="Job title or keyword"
-                  className="h-10 w-full border-b border-slate-200 bg-transparent pl-9 pr-3 text-sm text-slate-600 outline-none max-[390px]:h-[38px] max-[390px]:text-[13px] sm:h-11"
+                  className="h-11 w-full border-b border-slate-200 bg-transparent pl-9 pr-3 text-sm text-slate-600 outline-none max-[390px]:h-[38px] max-[390px]:text-[13px] lg:h-[60px] lg:border-0"
                 />
               </div>
 
-              <div className="relative">
+              <div className="relative px-2 max-[390px]:px-[7px] lg:border-r lg:border-[#e8ebf6] lg:px-4">
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
                     <path d="M12 21s7-5.8 7-11a7 7 0 1 0-14 0c0 5.2 7 11 7 11Z" />
@@ -134,9 +145,10 @@ export default async function Home({ searchParams }: HomeProps) {
                 </span>
                 <select
                   name="location"
-                  defaultValue={location}
-                  className="h-10 w-full appearance-none border-b border-slate-200 bg-transparent pl-9 pr-8 text-sm text-slate-600 outline-none max-[390px]:h-[38px] max-[390px]:text-[13px] sm:h-11"
+                  defaultValue={location || "Florence, Italy"}
+                  className="h-11 w-full appearance-none border-b border-slate-200 bg-transparent pl-9 pr-8 text-sm text-slate-600 outline-none max-[390px]:h-[38px] max-[390px]:text-[13px] lg:h-[62px] lg:border-0"
                 >
+                  <option value="Florence, Italy">Florence, Italy</option>
                   <option value="">All locations</option>
                   {locations.map((item) => (
                     <option key={item} value={item}>
@@ -146,7 +158,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 </select>
               </div>
 
-              <button type="submit" className="h-10 rounded-sm bg-[#4f46e5] text-base font-semibold text-white transition hover:bg-[#4338ca] max-[390px]:h-[38px] max-[390px]:text-[13px] sm:h-11">
+              <button type="submit" className="h-11 rounded-sm bg-[#4f46e5] text-sm font-semibold text-white transition hover:bg-[#4338ca] max-[390px]:mx-[7px] max-[390px]:mb-[7px] max-[390px]:h-[38px] max-[390px]:text-[13px] lg:m-0 lg:h-[60px] lg:text-[16px] lg:font-semibold">
                 Search my job
               </button>
             </form>
@@ -154,19 +166,18 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="mt-3 text-xs text-slate-500 max-[390px]:text-[11px]">Popular: UI Designer, UX Researcher, Android, Admin</p>
           </div>
 
-          <div className="relative hidden h-[540px] overflow-hidden lg:block">
+          <div className="relative z-10 hidden h-[540px] overflow-visible lg:block">
             <div
-              className="absolute inset-0 opacity-90"
+              className="absolute right-0 top-0 h-full w-[58%] opacity-48"
               aria-hidden
               style={{
-                backgroundImage:
-                  "linear-gradient(153deg, transparent 63%, rgba(99,102,241,0.26) 63%, rgba(99,102,241,0.26) 64%, transparent 64%), linear-gradient(153deg, transparent 78%, rgba(99,102,241,0.2) 78%, rgba(99,102,241,0.2) 79%, transparent 79%)",
-                backgroundSize: "100% 100%, 72% 72%",
-                backgroundPosition: "right top, right 24px top 74px",
+                backgroundImage: "url('/Pattern.png')",
+                backgroundSize: "contain",
+                backgroundPosition: "right top",
                 backgroundRepeat: "no-repeat",
               }}
             />
-            <div className="absolute right-2 bottom-0 z-20 h-[510px] w-[372px]">
+            <div className="absolute right-0 bottom-0 z-20 h-[520px] w-[390px]">
               <HeroCandidateImage />
             </div>
           </div>
@@ -206,16 +217,36 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
             {categoryCards.map((item) => {
               const categoryCount = categoryCountMap[item.title.toLowerCase()] ?? 0;
+              const isFeaturedCategory = item.title === "Marketing";
+
               return (
                 <a
                   key={item.title}
                   href={`/jobs?category=${encodeURIComponent(item.title)}`}
-                  className="group min-h-[138px] rounded border border-slate-200 bg-white p-4 text-[#1f2a44] transition max-[390px]:min-h-[128px] max-[390px]:p-3.5 hover:border-[#4f46e5] hover:bg-[#4f46e5] hover:text-white focus-visible:border-[#4f46e5] focus-visible:bg-[#4f46e5] focus-visible:text-white sm:min-h-[150px] sm:p-5"
+                  className={`group min-h-[138px] rounded border p-4 transition max-[390px]:min-h-[128px] max-[390px]:p-3.5 sm:min-h-[150px] sm:p-5 ${
+                    isFeaturedCategory
+                      ? "border-[#4f46e5] bg-[#4f46e5] text-white"
+                      : "border-slate-200 bg-white text-[#1f2a44] hover:border-[#4f46e5] hover:bg-[#4f46e5] hover:text-white focus-visible:border-[#4f46e5] focus-visible:bg-[#4f46e5] focus-visible:text-white"
+                  }`}
                 >
-                  <p className="text-lg font-bold">{item.icon}</p>
+                  <CategoryIcon name={item.icon} className="h-5 w-5 sm:h-6 sm:w-6" />
                   <h3 className="mt-4 text-[21px] font-extrabold max-[390px]:mt-3.5 max-[390px]:text-[19px] sm:mt-6 sm:text-xl">{item.title}</h3>
-                  <p className="mt-1 text-[13px] text-slate-500 max-[390px]:text-[12px] group-hover:text-white/90 group-focus-visible:text-white/90 sm:mt-2 sm:text-sm">
-                    {categoryCount} {categoryCount === 1 ? "job" : "jobs"} available
+                  <p className={`mt-1 flex items-center justify-between gap-2 text-[13px] max-[390px]:text-[12px] sm:mt-2 sm:text-sm ${isFeaturedCategory ? "text-white/90" : "text-slate-500 group-hover:text-white/90 group-focus-visible:text-white/90"}`}>
+                    <span>
+                      {categoryCount} {categoryCount === 1 ? "job" : "jobs"} available
+                    </span>
+                    <svg
+                      aria-hidden
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="m13 6 6 6-6 6" />
+                    </svg>
                   </p>
                 </a>
               );
@@ -227,23 +258,36 @@ export default async function Home({ searchParams }: HomeProps) {
           </Link>
         </section>
 
-        <section className="mt-14 overflow-hidden rounded bg-[#4f46e5] text-white max-[390px]:mt-12">
-          <div className="grid gap-6 p-8 max-[390px]:gap-4 max-[390px]:p-6 lg:grid-cols-[1fr_1.1fr] lg:p-10">
-            <div>
-              <h3 className="text-[42px] font-extrabold leading-[1.02] tracking-tight max-[390px]:text-[41px] max-[390px]:leading-[1.03]">Start posting jobs today</h3>
-              <p className="mt-3 text-sm text-white/85 max-[390px]:text-[12px]">Start posting jobs for only $10.</p>
-              <Link href="/admin" className="mt-6 inline-flex rounded bg-white px-5 py-3 text-sm font-semibold text-[#4f46e5] max-[390px]:mt-4 max-[390px]:w-full max-[390px]:justify-center max-[390px]:py-2.5 max-[390px]:text-[13px]">
-                Sign Up For Free
-              </Link>
-            </div>
+        <section className="relative mt-14 overflow-hidden max-[390px]:mt-12">
+          <div
+            className="relative bg-[#4f46e5] text-white max-[390px]:px-0"
+            style={{ clipPath: "polygon(8.5% 0, 100% 0, 100% 76%, 86% 100%, 0 100%, 0 18%)" }}
+          >
 
-            <div className="rounded bg-white/95 p-4 text-slate-800">
-              <div className="grid grid-cols-3 gap-3 text-center text-xs font-semibold text-slate-500">
-                <div className="rounded bg-slate-100 p-3">21,457 jobs</div>
-                <div className="rounded bg-slate-100 p-3">158 hires</div>
-                <div className="rounded bg-slate-100 p-3">98 teams</div>
+            <div className="grid items-center gap-6 p-8 max-[390px]:gap-4 max-[390px]:p-6 sm:p-10 lg:grid-cols-[1fr_1.15fr] lg:gap-8 lg:px-12 lg:py-10">
+              <div className="lg:pl-2">
+                <h3 className="text-[42px] font-extrabold leading-[1.02] tracking-tight max-[390px]:text-[41px] max-[390px]:leading-[1.03] lg:text-[52px]">
+                  Start posting
+                  <br />
+                  jobs today
+                </h3>
+                <p className="mt-4 text-sm text-white/90 max-[390px]:text-[12px]">Start posting jobs for only $10.</p>
+                <Link href="/admin" className="mt-6 inline-flex rounded-sm bg-white px-5 py-3 text-sm font-semibold text-[#4f46e5] max-[390px]:mt-4 max-[390px]:w-full max-[390px]:justify-center max-[390px]:py-2.5 max-[390px]:text-[13px]">
+                  Sign Up For Free
+                </Link>
               </div>
-              <div className="mt-4 h-28 rounded bg-gradient-to-r from-[#4f46e5]/20 via-[#30a7ff]/20 to-[#4f46e5]/20" />
+
+              <div className="relative z-10">
+                <div className="overflow-hidden rounded-sm border border-white/15 bg-white/95 p-1 shadow-[0_20px_40px_rgba(19,23,46,0.28)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/3.1%20Dashboard%20Company.png"
+                    alt="Dashboard preview"
+                    className="w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -260,21 +304,27 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <div className="flex gap-4 overflow-x-auto pb-1 max-[390px]:gap-3 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4">
             {featuredJobs.map((job, index) => (
-              <article key={`featured-${job.id}-${index}`} className="w-[244px] shrink-0 rounded border border-slate-200 bg-white p-4 max-[390px]:w-[220px] max-[390px]:p-3.5 sm:w-auto sm:shrink">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-bold text-[#4f46e5]">
-                    {job.company.slice(0, 2).toUpperCase()}
-                  </span>
-                  <span className="rounded border border-[#cbc9ff] px-2 py-1 text-[11px] font-semibold text-[#4f46e5]">Full Time</span>
-                </div>
-                <h3 className="mt-4 text-lg font-extrabold text-[#1f2a44]">{job.title}</h3>
-                <p className="mt-1 text-sm text-slate-500">{job.company} • {job.location}</p>
-                <p className="mt-3 text-xs leading-5 text-slate-500">{shortText(job.description, 68)}</p>
-                <div className="mt-4 flex gap-2 text-[11px] font-semibold">
-                  <span className="rounded-full bg-[#fff4de] px-2 py-1 text-[#e78a00]">Marketing</span>
-                  <span className="rounded-full bg-[#ebf9f1] px-2 py-1 text-[#0ea36e]">Design</span>
-                </div>
-              </article>
+              <Link
+                key={`featured-${job.id}-${index}`}
+                href={`/jobs/${job.id}`}
+                className="block w-[244px] shrink-0 rounded border border-slate-200 bg-white p-4 transition hover:border-[#4f46e5] max-[390px]:w-[220px] max-[390px]:p-3.5 sm:w-auto sm:shrink"
+              >
+                <article>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-bold text-[#4f46e5]">
+                      {job.company.slice(0, 2).toUpperCase()}
+                    </span>
+                    <span className="rounded border border-[#cbc9ff] px-2 py-1 text-[11px] font-semibold text-[#4f46e5]">Full Time</span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-extrabold text-[#1f2a44]">{job.title}</h3>
+                  <p className="mt-1 text-sm text-slate-500">{job.company} • {job.location}</p>
+                  <p className="mt-3 text-xs leading-5 text-slate-500">{shortText(job.description, 68)}</p>
+                  <div className="mt-4 flex gap-2 text-[11px] font-semibold">
+                    <span className="rounded-full bg-[#fff4de] px-2 py-1 text-[#e78a00]">Marketing</span>
+                    <span className="rounded-full bg-[#ebf9f1] px-2 py-1 text-[#0ea36e]">Design</span>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
 
@@ -295,22 +345,24 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <div className="grid gap-3 lg:grid-cols-2">
             {mobileLatestJobs.map((job, index) => (
-              <article key={`latest-${job.id}-${index}`} className="rounded bg-white p-4 max-[390px]:p-3 sm:p-5">
-                <div className="flex items-start gap-3">
-                  <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-bold text-[#4f46e5]">
-                    {job.company.slice(0, 2).toUpperCase()}
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-extrabold text-[#1f2a44] max-[390px]:text-[17px]">{job.title}</h3>
-                    <p className="text-sm text-slate-500 max-[390px]:text-[12px]">{job.company} • {job.location}</p>
-                    <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-semibold max-[390px]:text-[10px]">
-                      <span className="rounded-full bg-[#ebf9f1] px-2 py-1 text-[#0ea36e]">Full-Time</span>
-                      <span className="rounded-full bg-[#fff4de] px-2 py-1 text-[#e78a00]">Marketing</span>
-                      <span className="rounded-full border border-[#cbc9ff] px-2 py-1 text-[#4f46e5]">Design</span>
+              <Link key={`latest-${job.id}-${index}`} href={`/jobs/${job.id}`} className="block rounded bg-white p-4 transition hover:ring-1 hover:ring-[#4f46e5]/35 max-[390px]:p-3 sm:p-5">
+                <article>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-bold text-[#4f46e5]">
+                      {job.company.slice(0, 2).toUpperCase()}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-extrabold text-[#1f2a44] max-[390px]:text-[17px]">{job.title}</h3>
+                      <p className="text-sm text-slate-500 max-[390px]:text-[12px]">{job.company} • {job.location}</p>
+                      <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-semibold max-[390px]:text-[10px]">
+                        <span className="rounded-full bg-[#ebf9f1] px-2 py-1 text-[#0ea36e]">Full-Time</span>
+                        <span className="rounded-full bg-[#fff4de] px-2 py-1 text-[#e78a00]">Marketing</span>
+                        <span className="rounded-full border border-[#cbc9ff] px-2 py-1 text-[#4f46e5]">Design</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             ))}
           </div>
 
@@ -382,4 +434,87 @@ function fillJobs(jobs: Job[], limit: number): Job[] {
   const pool = [...jobs, ...jobs, ...jobs, ...jobs];
 
   return pool.slice(0, limit);
+}
+
+function CategoryIcon({ name, className }: { name: string; className?: string }) {
+  const baseProps = {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.9",
+    className,
+    "aria-hidden": true,
+  } as const;
+
+  switch (name) {
+    case "design":
+      return (
+        <svg {...baseProps}>
+          <path d="m4 20 7-7" />
+          <path d="m14 6 4 4" />
+          <path d="m10 4 10 10" />
+          <path d="m3 21 4-1 13-13-3-3L4 17l-1 4Z" />
+        </svg>
+      );
+    case "sales":
+      return (
+        <svg {...baseProps}>
+          <path d="M5 20V10" />
+          <path d="M10 20V5" />
+          <path d="M15 20v-7" />
+          <path d="M20 20V8" />
+          <circle cx="7" cy="6" r="2" />
+        </svg>
+      );
+    case "marketing":
+      return (
+        <svg {...baseProps}>
+          <path d="M4 13V9l11-4v12L4 13Z" />
+          <path d="M15 10h3a2 2 0 0 1 0 4h-3" />
+          <path d="m7 13 1.5 5" />
+        </svg>
+      );
+    case "finance":
+      return (
+        <svg {...baseProps}>
+          <rect x="3" y="7" width="18" height="12" rx="2" />
+          <path d="M3 11h18" />
+          <path d="M7 15h3" />
+        </svg>
+      );
+    case "technology":
+      return (
+        <svg {...baseProps}>
+          <rect x="4" y="4" width="16" height="12" rx="2" />
+          <path d="M9 20h6" />
+          <path d="M12 16v4" />
+        </svg>
+      );
+    case "engineering":
+      return (
+        <svg {...baseProps}>
+          <path d="m8 7-4 5 4 5" />
+          <path d="m16 7 4 5-4 5" />
+          <path d="m14 5-4 14" />
+        </svg>
+      );
+    case "business":
+      return (
+        <svg {...baseProps}>
+          <rect x="4" y="6" width="16" height="14" rx="2" />
+          <path d="M9 6V4h6v2" />
+          <path d="M4 12h16" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...baseProps}>
+          <circle cx="8" cy="9" r="2.5" />
+          <circle cx="16" cy="9" r="2.5" />
+          <path d="M3 20a5 5 0 0 1 10 0" />
+          <path d="M11 20a5 5 0 0 1 10 0" />
+        </svg>
+      );
+  }
 }

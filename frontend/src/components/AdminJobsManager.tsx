@@ -1,6 +1,6 @@
 "use client";
 
-import { createJob, deleteJob, getCurrentAdmin, logoutAdmin } from "@/lib/api";
+import { ApiError, createJob, deleteJob, getCurrentAdmin, logoutAdmin } from "@/lib/api";
 import { clearAuthToken, getAuthToken } from "@/lib/auth";
 import type { Job } from "@/types";
 import Link from "next/link";
@@ -31,6 +31,13 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
   const totalLocations = new Set(jobs.map((job) => job.location)).size;
   const latestJobTitle = sortedJobs[0]?.title ?? "No jobs yet";
 
+  function handleAuthFailure(message = "Your session expired. Please sign in again.") {
+    clearAuthToken();
+    setToken(null);
+    setError(message);
+    router.push("/admin/login");
+  }
+
   useEffect(() => {
     const authToken = getAuthToken();
 
@@ -41,6 +48,10 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
 
     getCurrentAdmin(authToken)
       .then((admin) => {
+        if (!admin.is_admin) {
+          throw new ApiError("Admin access is required.", 403);
+        }
+
         setToken(authToken);
         setAdminName(admin.name);
       })
@@ -75,6 +86,11 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
       setJobs((prev) => [created, ...prev]);
       setSuccess("Job created successfully.");
     } catch (createError) {
+      if (createError instanceof ApiError && (createError.status === 401 || createError.status === 403)) {
+        handleAuthFailure();
+        return;
+      }
+
       setError(createError instanceof Error ? createError.message : "Failed to create job.");
     } finally {
       setLoading(false);
@@ -94,6 +110,11 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
       setJobs((prev) => prev.filter((job) => job.id !== id));
       setSuccess("Job deleted successfully.");
     } catch (deleteError) {
+      if (deleteError instanceof ApiError && (deleteError.status === 401 || deleteError.status === 403)) {
+        handleAuthFailure();
+        return;
+      }
+
       setError(deleteError instanceof Error ? deleteError.message : "Failed to delete job.");
     }
   }
