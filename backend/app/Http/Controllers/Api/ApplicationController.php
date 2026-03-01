@@ -9,6 +9,18 @@ use Illuminate\Http\JsonResponse;
 
 class ApplicationController extends Controller
 {
+    public function index(): JsonResponse
+    {
+        $applications = Application::query()
+            ->with(['job:id,title,company,location,category'])
+            ->latest('id')
+            ->get();
+
+        return response()->json([
+            'data' => $applications,
+        ]);
+    }
+
     public function store(StoreApplicationRequest $request): JsonResponse
     {
         $application = Application::create($request->validated());

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MobileHamburgerMenu } from "@/components/MobileHamburgerMenu";
 import { UserAuthMenu } from "@/components/UserAuthMenu";
 
 export function AppHeader() {
@@ -26,13 +27,7 @@ export function AppHeader() {
 
         <UserAuthMenu />
 
-        <button
-          type="button"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 lg:hidden"
-          aria-label="Open menu"
-        >
-          ☰
-        </button>
+        <MobileHamburgerMenu />
       </div>
     </header>
   );

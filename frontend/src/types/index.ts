@@ -25,6 +25,26 @@ export type ApplicationPayload = {
   cover_note: string;
 };
 
+export type ApplicationJobSummary = {
+  id: number;
+  title: string;
+  company: string;
+  location: string;
+  category: string;
+};
+
+export type Application = {
+  id: number;
+  job_id: number;
+  name: string;
+  email: string;
+  resume_link: string;
+  cover_note: string;
+  created_at: string;
+  updated_at: string;
+  job: ApplicationJobSummary | null;
+};
+
 export type AuthUser = {
   id: number;
   name: string;

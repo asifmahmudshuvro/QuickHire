@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 Route::middleware(['auth:sanctum', 'admin'])->group(function (): void {
 	Route::post('/jobs', [JobController::class, 'store']);
 	Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
+	Route::get('/applications', [ApplicationController::class, 'index']);
 });
 
 Route::post('/applications', [ApplicationController::class, 'store']);

@@ -1,11 +1,11 @@
 "use client";
 
-import { ApiError, createJob, deleteJob, getCurrentAdmin, logoutAdmin } from "@/lib/api";
+import { ApiError, createJob, deleteJob, getAdminApplications, getCurrentAdmin, logoutAdmin } from "@/lib/api";
 import { clearAuthToken, getAuthToken } from "@/lib/auth";
-import type { Job } from "@/types";
+import type { Application, Job } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type AdminJobsManagerProps = {
   initialJobs: Job[];
@@ -20,6 +20,9 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
   const [token, setToken] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [adminName, setAdminName] = useState<string>("Admin");
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [applicationsLoading, setApplicationsLoading] = useState(false);
+  const [applicationsError, setApplicationsError] = useState<string | null>(null);
 
   const sortedJobs = useMemo(
     () => [...jobs].sort((a, b) => Number(b.id) - Number(a.id)),
@@ -31,12 +34,41 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
   const totalLocations = new Set(jobs.map((job) => job.location)).size;
   const latestJobTitle = sortedJobs[0]?.title ?? "No jobs yet";
 
-  function handleAuthFailure(message = "Your session expired. Please sign in again.") {
+  const handleAuthFailure = useCallback((message = "Your session expired. Please sign in again.") => {
     clearAuthToken();
     setToken(null);
     setError(message);
     router.push("/admin/login");
-  }
+  }, [router]);
+
+  useEffect(() => {
+    if (!token) {
+      setApplications([]);
+      setApplicationsError(null);
+      return;
+    }
+
+    setApplicationsLoading(true);
+    setApplicationsError(null);
+
+    getAdminApplications(token)
+      .then((items) => {
+        setApplications(items);
+      })
+      .catch((applicationsFetchError) => {
+        if (applicationsFetchError instanceof ApiError && (applicationsFetchError.status === 401 || applicationsFetchError.status === 403)) {
+          handleAuthFailure();
+          return;
+        }
+
+        setApplicationsError(
+          applicationsFetchError instanceof Error ? applicationsFetchError.message : "Failed to load applications.",
+        );
+      })
+      .finally(() => {
+        setApplicationsLoading(false);
+      });
+  }, [handleAuthFailure, token]);
 
   useEffect(() => {
     const authToken = getAuthToken();
@@ -79,7 +111,7 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
 
     try {
       if (!token) {
-        throw new Error("Please login as admin.");
+        throw new Error("Please log in as an admin.");
       }
 
       const created = await createJob(payload, token);
@@ -103,7 +135,7 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
 
     try {
       if (!token) {
-        throw new Error("Please login as admin.");
+        throw new Error("Please log in as an admin.");
       }
 
       await deleteJob(id, token);
@@ -144,13 +176,13 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
       <section className="rounded-2xl border border-[#e5e8f6] bg-white p-6 shadow-[0_8px_20px_rgba(79,70,229,0.06)]">
         <h2 className="text-xl font-bold text-[#1f2a44]">Admin access required</h2>
         <p className="mt-2 text-sm text-slate-500">
-          Please login to create or delete job listings.
+          Please log in to create or delete job listings.
         </p>
         <Link
           href="/admin/login"
           className="mt-4 inline-flex rounded-xl bg-[#4f46e5] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4338ca]"
         >
-          Go to Admin Login
+          Go to Admin Sign In
         </Link>
       </section>
     );
@@ -251,6 +283,47 @@ export function AdminJobsManager({ initialJobs }: AdminJobsManagerProps) {
           </div>
         </section>
       </div>
+
+      <section className="rounded-2xl border border-[#e5e8f6] bg-white p-5 shadow-[0_8px_20px_rgba(79,70,229,0.06)]">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-[#1f2a44]">Applied Jobs</h2>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Total: {applications.length}</p>
+        </div>
+
+        {applicationsLoading ? <p className="mt-4 text-sm text-slate-500">Loading applications...</p> : null}
+        {applicationsError ? <p className="mt-4 text-sm text-red-600">{applicationsError}</p> : null}
+
+        {!applicationsLoading && !applicationsError ? (
+          <div className="mt-4 space-y-3">
+            {applications.length === 0 ? (
+              <p className="text-sm text-slate-500">No applications yet.</p>
+            ) : (
+              applications.map((application) => (
+                <article key={application.id} className="rounded-xl border border-slate-200 p-3">
+                  <h3 className="font-semibold text-[#1f2a44]">{application.job?.title ?? "Unknown job"}</h3>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {application.job?.company ?? "Unknown company"}
+                    {application.job?.location ? ` · ${application.job.location}` : ""}
+                    {application.job?.category ? ` · ${application.job.category}` : ""}
+                  </p>
+                  <p className="mt-2 text-sm text-slate-700">
+                    Applicant: <span className="font-medium">{application.name}</span> ({application.email})
+                  </p>
+                  <a
+                    href={application.resume_link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-1 inline-block text-xs font-semibold text-[#4f46e5] hover:text-[#4338ca]"
+                  >
+                    View Resume
+                  </a>
+                  <p className="mt-2 text-sm text-slate-600">{application.cover_note}</p>
+                </article>
+              ))
+            )}
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }

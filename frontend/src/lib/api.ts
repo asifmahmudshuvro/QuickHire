@@ -1,4 +1,5 @@
 import type {
+  Application,
   ApplicationPayload,
   AuthUser,
   Job,
@@ -105,6 +106,15 @@ export async function submitApplication(payload: ApplicationPayload): Promise<vo
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function getAdminApplications(token: string): Promise<Application[]> {
+  const json = await request<ApiResponse<Application[]>>(`/applications`, {
+    method: "GET",
+    headers: getAuthHeaders(token),
+  });
+
+  return json.data;
 }
 
 export async function loginAdmin(payload: LoginPayload): Promise<LoginResponse> {

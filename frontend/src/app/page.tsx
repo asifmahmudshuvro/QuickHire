@@ -1,5 +1,6 @@
 import type { Job } from "@/types";
 import { HeroCandidateImage } from "@/components/HeroCandidateImage";
+import { MobileHamburgerMenu } from "@/components/MobileHamburgerMenu";
 import { UserAuthMenu } from "@/components/UserAuthMenu";
 import { getCompanyLogo } from "@/lib/companyLogo";
 import { getJobs } from "@/lib/api";
@@ -48,9 +49,7 @@ export default async function Home({ searchParams }: HomeProps) {
   }, {});
 
   const featuredJobs = fillJobs(jobs, 8);
-  const latestJobs = fillJobs(jobs, 8);
-
-  const mobileLatestJobs = [...latestJobs].sort((a, b) => a.id - b.id);
+  const latestJobs = featuredJobs;
 
   return (
     <div className="min-h-screen bg-[#f5f6fb] text-slate-800 max-[390px]:overflow-x-hidden">
@@ -88,9 +87,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <UserAuthMenu />
 
-          <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 lg:hidden" aria-label="Open menu">
-            ☰
-          </button>
+          <MobileHamburgerMenu />
         </header>
 
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 pb-11 pt-2 max-[390px]:gap-6 max-[390px]:px-3 max-[390px]:pb-9 max-[390px]:pt-1 sm:px-6 lg:grid-cols-[1fr_0.95fr] lg:items-center lg:px-8 lg:pb-20">
@@ -140,10 +137,9 @@ export default async function Home({ searchParams }: HomeProps) {
                 </span>
                 <select
                   name="location"
-                  defaultValue={location || "Florence, Italy"}
+                  defaultValue={location}
                   className="h-11 w-full appearance-none border-b border-slate-200 bg-transparent pl-9 pr-8 text-sm text-slate-600 outline-none max-[390px]:h-[38px] max-[390px]:text-[13px] lg:h-[62px] lg:border-0"
                 >
-                  <option value="Florence, Italy">Florence, Italy</option>
                   <option value="">All locations</option>
                   {locations.map((item) => (
                     <option key={item} value={item}>
@@ -359,7 +355,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
 
           <div className="flex flex-col gap-3 overflow-x-hidden lg:grid lg:grid-cols-2">
-            {mobileLatestJobs.map((job, index) => (
+            {latestJobs.map((job, index) => (
               <Link
                 key={`latest-${job.id}-${index}`}
                 href={`/jobs/${job.id}`}
@@ -448,7 +444,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <div className="mt-8 border-t border-white/10 pt-6 sm:pt-7">
             <div className="flex flex-col items-center gap-4 text-center text-[#9ea6b8] sm:flex-row sm:items-center sm:justify-between sm:text-left">
-              <p className="text-[15px]">2021 @ QuickHire. All rights reserved.</p>
+              <p className="text-[15px]">{new Date().getFullYear()} @ QuickHire. All rights reserved.</p>
               <div className="flex items-center gap-4 sm:gap-3">
                 <a href="#" aria-label="Facebook" className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#32394d] text-[#eef1f7] transition hover:bg-[#3e475f]">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
