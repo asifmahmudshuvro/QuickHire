@@ -9,10 +9,14 @@ Route::get('/jobs', [JobController::class, 'index']);
 Route::get('/jobs/{job}', [JobController::class, 'show']);
 
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/user/register', [AuthController::class, 'userRegister']);
+Route::post('/auth/user/login', [AuthController::class, 'userLogin']);
 
 Route::middleware('auth:sanctum')->group(function (): void {
 	Route::get('/auth/me', [AuthController::class, 'me']);
 	Route::post('/auth/logout', [AuthController::class, 'logout']);
+	Route::get('/auth/user/me', [AuthController::class, 'userMe']);
+	Route::post('/auth/user/logout', [AuthController::class, 'userLogout']);
 });
 
 

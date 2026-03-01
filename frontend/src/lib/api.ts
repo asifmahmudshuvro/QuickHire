@@ -5,6 +5,7 @@ import type {
   JobCreatePayload,
   LoginPayload,
   LoginResponse,
+  UserRegisterPayload,
 } from "@/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
@@ -115,6 +116,24 @@ export async function loginAdmin(payload: LoginPayload): Promise<LoginResponse> 
   return json.data;
 }
 
+export async function registerUser(payload: UserRegisterPayload): Promise<LoginResponse> {
+  const json = await request<ApiResponse<LoginResponse>>(`/auth/user/register`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  return json.data;
+}
+
+export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
+  const json = await request<ApiResponse<LoginResponse>>(`/auth/user/login`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  return json.data;
+}
+
 export async function getCurrentAdmin(token: string): Promise<AuthUser> {
   const json = await request<ApiResponse<AuthUser>>(`/auth/me`, {
     method: "GET",
@@ -126,6 +145,22 @@ export async function getCurrentAdmin(token: string): Promise<AuthUser> {
 
 export async function logoutAdmin(token: string): Promise<void> {
   await request(`/auth/logout`, {
+    method: "POST",
+    headers: getAuthHeaders(token),
+  });
+}
+
+export async function getCurrentUser(token: string): Promise<AuthUser> {
+  const json = await request<ApiResponse<AuthUser>>(`/auth/user/me`, {
+    method: "GET",
+    headers: getAuthHeaders(token),
+  });
+
+  return json.data;
+}
+
+export async function logoutUser(token: string): Promise<void> {
+  await request(`/auth/user/logout`, {
     method: "POST",
     headers: getAuthHeaders(token),
   });

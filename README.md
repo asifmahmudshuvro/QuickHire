@@ -10,7 +10,7 @@ It includes:
 - Job detail view
 - Application submission form
 - Basic admin panel (add/delete jobs)
-- Admin authentication (login/logout with Sanctum token)
+- Admin authentication (login/logout with Sanctum token + admin role checks)
 
 ## Project Structure
 
@@ -34,7 +34,9 @@ It includes:
    - `php artisan key:generate`
 6. Run migrations:
    - `php artisan migrate`
-7. Start API server:
+7. Seed admin user:
+   - `php artisan db:seed --class=AdminUserSeeder --force`
+8. Start API server:
    - `php artisan serve`
 
 Default API URL: `http://127.0.0.1:8000/api`
@@ -56,14 +58,14 @@ Default frontend URL: `http://localhost:3000`
 ### Jobs
 - `GET /api/jobs` → list jobs (supports `search`, `category`, `location` query params)
 - `GET /api/jobs/{id}` → get single job details
-- `POST /api/jobs` → create new job (**auth required**)
-- `DELETE /api/jobs/{id}` → delete a job (**auth required**)
+- `POST /api/jobs` → create new job (**admin auth required**)
+- `DELETE /api/jobs/{id}` → delete a job (**admin auth required**)
 
 ### Applications
 - `POST /api/applications` → submit a job application
 
 ### Auth
-- `POST /api/auth/login` → admin login (returns bearer token)
+- `POST /api/auth/login` → admin login (rate-limited, returns bearer token)
 - `GET /api/auth/me` → get authenticated admin profile (**auth required**)
 - `POST /api/auth/logout` → revoke current token (**auth required**)
 

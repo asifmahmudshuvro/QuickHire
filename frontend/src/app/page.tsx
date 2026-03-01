@@ -85,10 +85,10 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
 
           <div className="hidden items-center gap-4 lg:flex">
-            <Link href="/admin" className="text-[13px] font-semibold text-[#4f46e5]">
+            <Link href="/login" className="text-[13px] font-semibold text-[#4f46e5]">
               Login
             </Link>
-            <Link href="/admin" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
+            <Link href="/signup" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
               Sign Up
             </Link>
           </div>
@@ -272,7 +272,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   jobs today
                 </h3>
                 <p className="mt-4 text-sm text-white/90 max-[390px]:text-[12px]">Start posting jobs for only $10.</p>
-                <Link href="/admin" className="mt-6 inline-flex rounded-sm bg-white px-5 py-3 text-sm font-semibold text-[#4f46e5] max-[390px]:mt-4 max-[390px]:w-full max-[390px]:justify-center max-[390px]:py-2.5 max-[390px]:text-[13px]">
+                <Link href="/signup" className="mt-6 inline-flex rounded-sm bg-white px-5 py-3 text-sm font-semibold text-[#4f46e5] max-[390px]:mt-4 max-[390px]:w-full max-[390px]:justify-center max-[390px]:py-2.5 max-[390px]:text-[13px]">
                   Sign Up For Free
                 </Link>
               </div>

@@ -24,10 +24,10 @@ export function AppHeader() {
         </div>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/admin" className="text-[13px] font-semibold text-[#4f46e5]">
+          <Link href="/login" className="text-[13px] font-semibold text-[#4f46e5]">
             Login
           </Link>
-          <Link href="/admin" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
+          <Link href="/signup" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
             Sign Up
           </Link>
         </div>

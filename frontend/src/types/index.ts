@@ -37,6 +37,13 @@ export type LoginPayload = {
   password: string;
 };
 
+export type UserRegisterPayload = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
 export type LoginResponse = {
   token: string;
   user: AuthUser;
