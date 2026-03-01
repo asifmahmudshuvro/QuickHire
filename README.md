@@ -68,6 +68,10 @@ Default frontend URL: `http://localhost:3000`
 - `POST /api/auth/login` → admin login (rate-limited, returns bearer token)
 - `GET /api/auth/me` → get authenticated admin profile (**auth required**)
 - `POST /api/auth/logout` → revoke current token (**auth required**)
+- `POST /api/auth/user/register` → user signup (returns bearer token)
+- `POST /api/auth/user/login` → user login (rate-limited, returns bearer token)
+- `GET /api/auth/user/me` → get authenticated user profile (**auth required**)
+- `POST /api/auth/user/logout` → revoke current user token (**auth required**)
 
 ## Data Models
 
@@ -103,6 +107,8 @@ Default frontend URL: `http://localhost:3000`
 - `/jobs/[id]` → Job Detail + Apply Form
 - `/admin` → Authenticated admin dashboard (Add/Delete jobs)
 - `/admin/login` → Admin login page
+- `/login` → User login page
+- `/signup` → User registration page
 
 ## Requirement Coverage
 

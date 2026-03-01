@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserAuthMenu } from "@/components/UserAuthMenu";
 
 export function AppHeader() {
   return (
@@ -23,14 +24,7 @@ export function AppHeader() {
           </nav>
         </div>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/login" className="text-[13px] font-semibold text-[#4f46e5]">
-            Login
-          </Link>
-          <Link href="/signup" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
-            Sign Up
-          </Link>
-        </div>
+        <UserAuthMenu />
 
         <button
           type="button"

@@ -1,22 +1,47 @@
 "use client";
 
+import { registerUser } from "@/lib/api";
+import { clearUserAuthToken, setUserAuthToken } from "@/lib/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function UserSignupPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(formData: FormData) {
     setLoading(true);
     setMessage(null);
+    setError(null);
 
     const name = String(formData.get("name") ?? "").trim();
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+    const passwordConfirmation = String(formData.get("password_confirmation") ?? "");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const data = await registerUser({
+        name,
+        email,
+        password,
+        password_confirmation: passwordConfirmation,
+      });
+      clearUserAuthToken();
+      setUserAuthToken(data.token);
+      setMessage("Account created successfully. Redirecting...");
 
-    setMessage(`Account setup started for ${name || "your profile"}.`);
-    setLoading(false);
+      setTimeout(() => {
+        router.push("/jobs");
+        router.refresh();
+      }, 500);
+    } catch (signupError) {
+      setError(signupError instanceof Error ? signupError.message : "Sign up failed.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -48,6 +73,13 @@ export default function UserSignupPage() {
               required
               className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600"
             />
+            <input
+              name="password_confirmation"
+              type="password"
+              placeholder="Confirm password"
+              required
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600"
+            />
 
             <button
               type="submit"
@@ -58,6 +90,7 @@ export default function UserSignupPage() {
             </button>
           </form>
 
+          {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
           {message ? <p className="mt-3 text-sm text-emerald-600">{message}</p> : null}
 
           <p className="mt-4 text-sm text-slate-500">

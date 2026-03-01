@@ -1,4 +1,5 @@
 import type { Job } from "@/types";
+import { getCompanyLogo } from "@/lib/companyLogo";
 import Link from "next/link";
 
 type JobCardProps = {
@@ -18,7 +19,13 @@ export function JobCard({ job }: JobCardProps) {
       </div>
 
       <h2 className="text-lg font-extrabold text-[#1f2a44]">{job.title}</h2>
-      <p className="mt-1 text-sm font-medium text-slate-500">{job.company}</p>
+      <div className="mt-2 flex items-center gap-2.5">
+        <span className="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-[#e5e8f6]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={getCompanyLogo(job.company)} alt={`${job.company} logo`} className="h-6 w-6 object-contain" loading="lazy" />
+        </span>
+        <p className="text-sm font-medium text-slate-500">{job.company}</p>
+      </div>
 
       <p className="mt-3 line-clamp-3 text-sm text-slate-600">{job.description}</p>
 

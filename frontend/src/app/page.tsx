@@ -1,5 +1,7 @@
 import type { Job } from "@/types";
 import { HeroCandidateImage } from "@/components/HeroCandidateImage";
+import { UserAuthMenu } from "@/components/UserAuthMenu";
+import { getCompanyLogo } from "@/lib/companyLogo";
 import { getJobs } from "@/lib/api";
 import Link from "next/link";
 
@@ -78,20 +80,13 @@ export default async function Home({ searchParams }: HomeProps) {
               <Link href="/jobs" className="hover:text-[#1f2a44]">
                 Find Jobs
               </Link>
-              <a href="#companies" className="hover:text-[#1f2a44]">
+              <Link href="/#companies" className="hover:text-[#1f2a44]">
                 Browse Companies
-              </a>
+              </Link>
             </nav>
           </div>
 
-          <div className="hidden items-center gap-4 lg:flex">
-            <Link href="/login" className="text-[13px] font-semibold text-[#4f46e5]">
-              Login
-            </Link>
-            <Link href="/signup" className="rounded-sm bg-[#4f46e5] px-7 py-2.5 text-[13px] font-semibold text-white">
-              Sign Up
-            </Link>
-          </div>
+          <UserAuthMenu />
 
           <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 lg:hidden" aria-label="Open menu">
             ☰
@@ -177,7 +172,10 @@ export default async function Home({ searchParams }: HomeProps) {
                 backgroundRepeat: "no-repeat",
               }}
             />
-            <div className="absolute right-0 bottom-0 z-20 h-[520px] w-[390px]">
+            <div
+              className="absolute right-0 bottom-0 z-20 h-[520px] w-[390px] overflow-hidden"
+              style={{ clipPath: "polygon(0 0, 100% 0, 100% 80%, 45% 100%, 0 100%)" }}
+            >
               <HeroCandidateImage />
             </div>
           </div>
@@ -217,24 +215,40 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
             {categoryCards.map((item) => {
               const categoryCount = categoryCountMap[item.title.toLowerCase()] ?? 0;
-              const isFeaturedCategory = item.title === "Marketing";
 
               return (
                 <a
                   key={item.title}
                   href={`/jobs?category=${encodeURIComponent(item.title)}`}
-                  className={`group min-h-[138px] rounded border p-4 transition max-[390px]:min-h-[128px] max-[390px]:p-3.5 sm:min-h-[150px] sm:p-5 ${
-                    isFeaturedCategory
-                      ? "border-[#4f46e5] bg-[#4f46e5] text-white"
-                      : "border-slate-200 bg-white text-[#1f2a44] hover:border-[#4f46e5] hover:bg-[#4f46e5] hover:text-white focus-visible:border-[#4f46e5] focus-visible:bg-[#4f46e5] focus-visible:text-white"
-                  }`}
+                  className="group rounded border border-slate-200 bg-white p-4 text-[#1f2a44] transition hover:border-[#4f46e5] hover:bg-[#4f46e5] hover:text-white focus-visible:border-[#4f46e5] focus-visible:bg-[#4f46e5] focus-visible:text-white max-[390px]:p-3.5 sm:min-h-[150px] sm:p-5"
                 >
-                  <CategoryIcon name={item.icon} className="h-5 w-5 sm:h-6 sm:w-6" />
-                  <h3 className="mt-4 text-[21px] font-extrabold max-[390px]:mt-3.5 max-[390px]:text-[19px] sm:mt-6 sm:text-xl">{item.title}</h3>
-                  <p className={`mt-1 flex items-center justify-between gap-2 text-[13px] max-[390px]:text-[12px] sm:mt-2 sm:text-sm ${isFeaturedCategory ? "text-white/90" : "text-slate-500 group-hover:text-white/90 group-focus-visible:text-white/90"}`}>
-                    <span>
-                      {categoryCount} {categoryCount === 1 ? "job" : "jobs"} available
-                    </span>
+                  <div className="flex items-center gap-4 sm:block">
+                    <CategoryIcon
+                      name={item.icon}
+                      className="h-8 w-8 shrink-0 text-[#4f46e5] group-hover:text-white group-focus-visible:text-white sm:h-10 sm:w-10"
+                    />
+
+                    <div className="min-w-0 flex-1 sm:mt-6">
+                      <h3 className="text-[21px] font-extrabold max-[390px]:text-[20px] sm:text-xl">{item.title}</h3>
+                      <p className="mt-1 text-[13px] text-slate-500 group-hover:text-white/90 group-focus-visible:text-white/90 max-[390px]:text-[12px] sm:flex sm:items-center sm:justify-between sm:gap-2 sm:text-sm">
+                        <span>
+                          {categoryCount} {categoryCount === 1 ? "job" : "jobs"} available
+                        </span>
+                        <svg
+                          aria-hidden
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className="hidden h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 sm:inline-block"
+                        >
+                          <path d="M5 12h14" />
+                          <path d="m13 6 6 6-6 6" />
+                        </svg>
+                      </p>
+                    </div>
+
                     <svg
                       aria-hidden
                       xmlns="http://www.w3.org/2000/svg"
@@ -242,12 +256,12 @@ export default async function Home({ searchParams }: HomeProps) {
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
-                      className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+                      className="h-4 w-4 shrink-0 sm:hidden"
                     >
                       <path d="M5 12h14" />
                       <path d="m13 6 6 6-6 6" />
                     </svg>
-                  </p>
+                  </div>
                 </a>
               );
             })}
@@ -311,8 +325,9 @@ export default async function Home({ searchParams }: HomeProps) {
               >
                 <article>
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-bold text-[#4f46e5]">
-                      {job.company.slice(0, 2).toUpperCase()}
+                    <span className="inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-[#e5e8f6]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={getCompanyLogo(job.company)} alt={`${job.company} logo`} className="h-7 w-7 object-contain" loading="lazy" />
                     </span>
                     <span className="rounded border border-[#cbc9ff] px-2 py-1 text-[11px] font-semibold text-[#4f46e5]">Full Time</span>
                   </div>
@@ -343,13 +358,18 @@ export default async function Home({ searchParams }: HomeProps) {
             </Link>
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="flex flex-col gap-3 overflow-x-hidden lg:grid lg:grid-cols-2">
             {mobileLatestJobs.map((job, index) => (
-              <Link key={`latest-${job.id}-${index}`} href={`/jobs/${job.id}`} className="block rounded bg-white p-4 transition hover:ring-1 hover:ring-[#4f46e5]/35 max-[390px]:p-3 sm:p-5">
+              <Link
+                key={`latest-${job.id}-${index}`}
+                href={`/jobs/${job.id}`}
+                className="block w-full min-w-0 rounded bg-white p-4 transition hover:ring-1 hover:ring-[#4f46e5]/35 max-[390px]:p-3 sm:p-5"
+              >
                 <article>
                   <div className="flex items-start gap-3">
-                    <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-bold text-[#4f46e5]">
-                      {job.company.slice(0, 2).toUpperCase()}
+                    <span className="mt-1 inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-[#e5e8f6]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={getCompanyLogo(job.company)} alt={`${job.company} logo`} className="h-8 w-8 object-contain" loading="lazy" />
                     </span>
                     <div>
                       <h3 className="text-lg font-extrabold text-[#1f2a44] max-[390px]:text-[17px]">{job.title}</h3>
@@ -372,45 +392,95 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
       </main>
 
-      <footer className="mt-14 bg-[#171d2f] text-white max-[390px]:mt-12">
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 max-[390px]:gap-8 max-[390px]:px-3 max-[390px]:py-10 sm:px-6 lg:grid-cols-[1.2fr_0.7fr_0.7fr_1fr] lg:px-8">
-          <div>
-            <p className="text-lg font-bold">QuickHire</p>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
-              Great platform for the job seeker that passionate about startups. Find your dream job easier.
-            </p>
+      <footer className="mt-14 bg-[#1f2538] text-white max-[390px]:mt-12">
+        <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 lg:grid-cols-[1.25fr_0.7fr_0.7fr_1fr] lg:gap-10">
+            <div className="col-span-2 lg:col-span-1">
+              <div className="inline-flex items-center gap-2.5">
+                <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4f46e5]">
+                  <span className="h-4 w-4 rounded-full border-2 border-white" />
+                  <span className="absolute right-[4px] top-[4px] h-1.5 w-1.5 rounded-full bg-white" />
+                </span>
+                <span className="text-[38px] font-extrabold leading-none tracking-tight text-white">QuickHire</span>
+              </div>
+              <p className="mt-6 max-w-sm text-[15px] leading-8 text-[#c2c8d6]">
+                Great platform for the job seeker that passionate about startups. Find your dream job easier.
+              </p>
+            </div>
+
+            <div className="col-span-1 lg:col-span-1">
+              <h4 className="text-[18px] font-semibold text-white">About</h4>
+              <ul className="mt-5 space-y-3 text-[16px] text-[#c2c8d6]">
+                <li>Companies</li>
+                <li>Pricing</li>
+                <li>Terms</li>
+                <li>Advice</li>
+                <li>Privacy Policy</li>
+              </ul>
+            </div>
+
+            <div className="col-span-1 lg:col-span-1">
+              <h4 className="text-[18px] font-semibold text-white">Resources</h4>
+              <ul className="mt-5 space-y-3 text-[16px] text-[#c2c8d6]">
+                <li>Help Docs</li>
+                <li>Guide</li>
+                <li>Updates</li>
+                <li>Contact Us</li>
+              </ul>
+            </div>
+
+            <div className="col-span-2 lg:col-span-1">
+              <h4 className="text-[18px] font-semibold text-white">Get job notifications</h4>
+              <p className="mt-5 max-w-sm text-[16px] leading-[1.55] text-[#c2c8d6]">
+                The latest job news, articles, sent to your inbox weekly.
+              </p>
+              <form className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <input
+                  placeholder="Email Address"
+                  className="h-11 w-full rounded-none border-0 bg-[#f2f3f7] px-4 text-[14px] text-slate-700 placeholder:text-[#9aa2b3] sm:h-12 sm:max-w-[260px] sm:text-base"
+                />
+                <button type="button" className="h-11 self-start rounded-none bg-[#4f46e5] px-6 text-[16px] font-semibold text-white sm:h-12 sm:text-base">
+                  Subscribe
+                </button>
+              </form>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold">About</h4>
-            <ul className="mt-3 space-y-2 text-sm text-slate-300">
-              <li>Companies</li>
-              <li>Pricing</li>
-              <li>Terms</li>
-              <li>Privacy Policy</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold">Resources</h4>
-            <ul className="mt-3 space-y-2 text-sm text-slate-300">
-              <li>Help Docs</li>
-              <li>Guide</li>
-              <li>Updates</li>
-              <li>Contact Us</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold">Get job notifications</h4>
-            <p className="mt-3 text-sm text-slate-300">The latest job news, articles, sent to your inbox weekly.</p>
-            <form className="mt-4 flex flex-col gap-2 sm:flex-row">
-              <input placeholder="Email Address" className="h-10 rounded border border-white/10 bg-white px-3 text-sm text-slate-800 max-[390px]:h-9 max-[390px]:text-[13px]" />
-              <button type="button" className="h-10 rounded bg-[#4f46e5] px-4 text-sm font-semibold max-[390px]:h-9 max-[390px]:text-[13px]">Subscribe</button>
-            </form>
-          </div>
-        </div>
-        <div className="border-t border-white/10">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-6 text-xs text-slate-400 max-[390px]:px-3 sm:px-6 lg:px-8">
-            <p>2026 © QuickHire. All rights reserved.</p>
-            <p>● ● ● ● ●</p>
+
+          <div className="mt-8 border-t border-white/10 pt-6 sm:pt-7">
+            <div className="flex flex-col items-center gap-4 text-center text-[#9ea6b8] sm:flex-row sm:items-center sm:justify-between sm:text-left">
+              <p className="text-[15px]">2021 @ QuickHire. All rights reserved.</p>
+              <div className="flex items-center gap-4 sm:gap-3">
+                <a href="#" aria-label="Facebook" className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#32394d] text-[#eef1f7] transition hover:bg-[#3e475f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+                    <path d="M13.5 8H16V5h-2.5C11.3 5 10 6.3 10 8.5V10H8v3h2v6h3v-6h2.4l.6-3H13V8.7c0-.5.2-.7.5-.7Z" />
+                  </svg>
+                </a>
+                <a href="#" aria-label="Instagram" className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#32394d] text-[#eef1f7] transition hover:bg-[#3e475f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className="h-3.5 w-3.5">
+                    <rect x="4" y="4" width="16" height="16" rx="5" />
+                    <circle cx="12" cy="12" r="3.5" />
+                    <circle cx="16.8" cy="7.2" r="0.8" fill="currentColor" stroke="none" />
+                  </svg>
+                </a>
+                <a href="#" aria-label="Dribbble" className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#32394d] text-[#eef1f7] transition hover:bg-[#3e475f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className="h-3.5 w-3.5">
+                    <circle cx="12" cy="12" r="8" />
+                    <path d="M7 8.5c3.2 1.1 7.9 1.2 10.8 0" />
+                    <path d="M8.4 17c1-2.2 3.3-5.1 6.8-6.6" />
+                  </svg>
+                </a>
+                <a href="#" aria-label="LinkedIn" className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#32394d] text-[#eef1f7] transition hover:bg-[#3e475f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+                    <path d="M6.3 8.1a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6ZM4.8 9.7h3V19h-3V9.7Zm5 0h2.9V11c.4-.8 1.4-1.5 2.9-1.5 3.1 0 3.7 2 3.7 4.7V19h-3v-4.1c0-1-.1-2.3-1.5-2.3s-1.7 1.1-1.7 2.2V19h-3V9.7Z" />
+                  </svg>
+                </a>
+                <a href="#" aria-label="Twitter" className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#32394d] text-[#eef1f7] transition hover:bg-[#3e475f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+                    <path d="M19.2 7.2c-.5.2-1 .3-1.5.4.5-.3 1-.8 1.2-1.4-.5.3-1.1.5-1.7.7a2.7 2.7 0 0 0-4.6 2.5A7.7 7.7 0 0 1 7 6.7a2.7 2.7 0 0 0 .8 3.6c-.4 0-.8-.1-1.2-.3v.1c0 1.3.9 2.5 2.2 2.7-.2.1-.5.1-.7.1-.2 0-.3 0-.5-.1.3 1.1 1.4 1.9 2.6 1.9A5.5 5.5 0 0 1 6 16.2a7.7 7.7 0 0 0 4.2 1.2c5 0 7.8-4.1 7.8-7.8v-.3c.5-.4.9-.8 1.2-1.4Z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

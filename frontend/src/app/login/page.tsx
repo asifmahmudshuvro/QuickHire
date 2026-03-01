@@ -1,22 +1,40 @@
 "use client";
 
+import { loginUser } from "@/lib/api";
+import { clearUserAuthToken, setUserAuthToken } from "@/lib/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function UserLoginPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(formData: FormData) {
     setLoading(true);
     setMessage(null);
+    setError(null);
 
     const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const data = await loginUser({ email, password });
+      clearUserAuthToken();
+      setUserAuthToken(data.token);
+      setMessage("Login successful. Redirecting...");
 
-    setMessage(`Welcome back, ${email || "user"}. User login UI is ready.`);
-    setLoading(false);
+      setTimeout(() => {
+        router.push("/jobs");
+        router.refresh();
+      }, 500);
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : "Login failed.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -51,6 +69,7 @@ export default function UserLoginPage() {
             </button>
           </form>
 
+          {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
           {message ? <p className="mt-3 text-sm text-emerald-600">{message}</p> : null}
 
           <p className="mt-4 text-sm text-slate-500">
