@@ -3,5 +3,9 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->away('http://127.0.0.1:3000');
+    return response()->json([
+        'name' => 'QuickHire API',
+        'status' => 'running',
+        'jobs_endpoint' => '/api/jobs'
+    ]);
 });
