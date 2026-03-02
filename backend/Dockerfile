@@ -17,4 +17,5 @@ COPY . .
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-CMD php -S 0.0.0.0:$PORT -t public
+# Run migrations automatically
+CMD php artisan migrate --force && php artisan db:seed --force && php -S 0.0.0.0:$PORT -t public
