@@ -12,9 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+
+        // Enable CORS
+        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
+
+        // Admin middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
