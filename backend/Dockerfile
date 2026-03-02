@@ -1,43 +1,29 @@
-FROM composer:2 AS vendor
-WORKDIR /app
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+FROM php:8.2-cli
 
-FROM php:8.3-cli-alpine
+WORKDIR /var/www
 
-RUN apk add --no-cache \
-    bash \
+# Install dependencies
+RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    icu-dev \
-    oniguruma-dev \
+    curl \
     libzip-dev \
-    && docker-php-ext-install \
-      bcmath \
-      exif \
-      intl \
-      mbstring \
-      pdo \
-            pdo_mysql
+    zip
 
-WORKDIR /var/www/html
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
 
-COPY --from=vendor /app/vendor ./vendor
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy Laravel project
 COPY . .
 
-RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
-    && chmod -R ug+rwx storage bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache
+# Install Laravel dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-COPY docker/start.sh /usr/local/bin/start-laravel
-RUN chmod +x /usr/local/bin/start-laravel
+# Expose port
+EXPOSE 8080
 
-EXPOSE 10000
-
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-ENV RUN_MIGRATIONS=false
-
-USER www-data
-
-CMD ["/usr/local/bin/start-laravel"]
+# Start Laravel server
+CMD php artisan serve --host=0.0.0.0 --port=8080
