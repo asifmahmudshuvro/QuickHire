@@ -9,7 +9,14 @@ import type {
   UserRegisterPayload,
 } from "@/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
+/*
+ Production-safe API URL
+ Works both locally and on Railway
+*/
+
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://quickhire-production-86ea.up.railway.app/api";
 
 type ApiResponse<T> = {
   data: T;
@@ -34,9 +41,7 @@ export class ApiError extends Error {
 }
 
 function getAuthHeaders(token?: string): HeadersInit {
-  if (!token) {
-    return {};
-  }
+  if (!token) return {};
 
   return {
     Authorization: `Bearer ${token}`,
@@ -55,11 +60,20 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({} as ApiErrorResponse));
-    throw new ApiError(body?.message ?? "Request failed", response.status, body?.errors);
+
+    throw new ApiError(
+      body?.message ?? "Request failed",
+      response.status,
+      body?.errors
+    );
   }
 
   return response.json() as Promise<T>;
 }
+
+/* =========================
+   Jobs
+========================= */
 
 export async function getJobs(filters?: {
   search?: string;
@@ -73,6 +87,7 @@ export async function getJobs(filters?: {
   if (filters?.location) params.set("location", filters.location);
 
   const query = params.toString() ? `?${params.toString()}` : "";
+
   const json = await request<ApiResponse<Job[]>>(`/jobs${query}`);
 
   return json.data;
@@ -84,7 +99,10 @@ export async function getJobById(id: string): Promise<Job> {
   return json.data;
 }
 
-export async function createJob(payload: JobCreatePayload, token?: string): Promise<Job> {
+export async function createJob(
+  payload: JobCreatePayload,
+  token?: string
+): Promise<Job> {
   const json = await request<ApiResponse<Job>>(`/jobs`, {
     method: "POST",
     headers: getAuthHeaders(token),
@@ -101,14 +119,22 @@ export async function deleteJob(id: number, token?: string): Promise<void> {
   });
 }
 
-export async function submitApplication(payload: ApplicationPayload): Promise<void> {
+/* =========================
+   Applications
+========================= */
+
+export async function submitApplication(
+  payload: ApplicationPayload
+): Promise<void> {
   await request(`/applications`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export async function getAdminApplications(token: string): Promise<Application[]> {
+export async function getAdminApplications(
+  token: string
+): Promise<Application[]> {
   const json = await request<ApiResponse<Application[]>>(`/applications`, {
     method: "GET",
     headers: getAuthHeaders(token),
@@ -117,26 +143,14 @@ export async function getAdminApplications(token: string): Promise<Application[]
   return json.data;
 }
 
-export async function loginAdmin(payload: LoginPayload): Promise<LoginResponse> {
+/* =========================
+   Admin Auth
+========================= */
+
+export async function loginAdmin(
+  payload: LoginPayload
+): Promise<LoginResponse> {
   const json = await request<ApiResponse<LoginResponse>>(`/auth/login`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-
-  return json.data;
-}
-
-export async function registerUser(payload: UserRegisterPayload): Promise<LoginResponse> {
-  const json = await request<ApiResponse<LoginResponse>>(`/auth/user/register`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-
-  return json.data;
-}
-
-export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
-  const json = await request<ApiResponse<LoginResponse>>(`/auth/user/login`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -158,6 +172,38 @@ export async function logoutAdmin(token: string): Promise<void> {
     method: "POST",
     headers: getAuthHeaders(token),
   });
+}
+
+/* =========================
+   User Auth
+========================= */
+
+export async function registerUser(
+  payload: UserRegisterPayload
+): Promise<LoginResponse> {
+  const json = await request<ApiResponse<LoginResponse>>(
+    `/auth/user/register`,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+
+  return json.data;
+}
+
+export async function loginUser(
+  payload: LoginPayload
+): Promise<LoginResponse> {
+  const json = await request<ApiResponse<LoginResponse>>(
+    `/auth/user/login`,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+
+  return json.data;
 }
 
 export async function getCurrentUser(token: string): Promise<AuthUser> {
